@@ -1,0 +1,54 @@
+@startuml
+
+class Main {
+  + main(args: String[]): void
+}
+
+class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + Room(String, String, double, boolean)
+  + Room(String, String, double)
+  + book(): void
+  + release(): void
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+class Guest {
+  - guestId: String
+  - fullName: String
+  - phone: String
+  + Guest(String, String, String)
+  + Guest(String, String)
+  + hasPhone(): boolean
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+class Booking {
+  - bookingId: String
+  - guest: Guest
+  - room: Room
+  - nights: int
+  - active: boolean
+  + Booking(String, Guest, Room, int, boolean)
+  + Booking(String, Guest, Room, int)
+  + totalCost(): double
+  + cancel(): void
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+Main --> Room
+Main --> Guest
+Main --> Booking
+Booking --> Guest
+Booking --> Room
+
+@enduml
