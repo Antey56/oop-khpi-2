@@ -1,0 +1,81 @@
+@startuml
+
+class Main {
+  + main(args: String[]): void
+}
+
+class Hotel {
+  - name: String
+  - rooms: Room[]
+  - roomCount: int
+  + Hotel(String, int)
+  + getName(): String
+  + addRoom(Room): void
+  + findAvailableRoom(): Room
+  + printRooms(): void
+  + toString(): String
+}
+
+class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + Room(String, String, double, boolean)
+  + Room(String, String, double)
+  + getRoomNumber(): String
+  + getRoomType(): String
+  + getPricePerNight(): double
+  + isAvailable(): boolean
+  + book(): void
+  + release(): void
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+class Guest {
+  - guestId: String
+  - fullName: String
+  - phone: String
+  + Guest(String, String, String)
+  + Guest(String, String)
+  + getGuestId(): String
+  + getFullName(): String
+  + getPhone(): String
+  + hasPhone(): boolean
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+class Booking {
+  - bookingId: String
+  - guest: Guest
+  - room: Room
+  - nights: int
+  - active: boolean
+  + Booking(String, Guest, Room, int, boolean)
+  + Booking(String, Guest, Room, int)
+  + getBookingId(): String
+  + getGuest(): Guest
+  + getRoom(): Room
+  + getNights(): int
+  + isActive(): boolean
+  + totalCost(): double
+  + cancel(): void
+  + toString(): String
+  + equals(Object): boolean
+  + hashCode(): int
+}
+
+Main --> Hotel : uses
+Main --> Room : uses
+Main --> Guest : uses
+Main --> Booking : uses
+
+Hotel o-- Room : aggregation
+Booking --> Guest : association
+Booking --> Room : association
+
+@enduml
