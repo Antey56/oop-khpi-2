@@ -1,0 +1,11 @@
+# IntelliJ / VS Code
+.idea/
+*.iml
+
+# Compiled files
+out/
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
