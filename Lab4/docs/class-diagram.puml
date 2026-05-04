@@ -1,0 +1,40 @@
+@startuml
+
+class Hotel {
+  - name: String
+  - rooms: Room[]
+  - roomCount: int
+  + addRoom()
+  + findAvailableRoom()
+}
+
+class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + book()
+  + release()
+}
+
+class Guest {
+  - guestId: String
+  - fullName: String
+  - phone: String
+}
+
+class Booking {
+  - bookingId: String
+  - nights: int
+  - active: boolean
+  - guest: Guest
+  - room: Room
+  + cancel()
+  + totalCost()
+}
+
+Hotel "1" -- "*" Room
+Booking "*" -- "1" Guest
+Booking "*" -- "1" Room
+
+@enduml
