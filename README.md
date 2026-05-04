@@ -21,7 +21,7 @@ javac -d out src/main/Java/ua/khpi/oop/lab02/*.java
 
 # запуск
 java -cp out ua.khpi.oop.lab02.Main
-
+```
 <p align="center">
   <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjY4dXYwOHQwc2VjaXF3bTNvbzg2aDJzdDk0YjEzZzVyZmd0Y3I4ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/YJDmc88k7ttao/giphy.gif" width="250" alt="Cool GIF"/>
 </p>
