@@ -1,33 +1,29 @@
-# Lab 3 — Модульне тестування (JUnit Jupiter)
+🧪 Лабораторна робота №4 — TestNG
+📌 Опис
 
-## 📌 Опис
-У цій лабораторній роботі реалізовано модульне тестування предметної моделі системи бронювання номерів у готелі.
+У проєкті реалізовано модульне тестування системи бронювання номерів у готелі з використанням TestNG.
 
-Тестування виконано з використанням JUnit Jupiter та Maven.
+Тестуються класи:
 
-## 🧱 Структура проєкту
-
-
-src/
-├── main/java/ua/khpi/oop/lab03/
-│ ├── Room.java
-│ ├── Guest.java
-│ ├── Booking.java
-│ └── Hotel.java
-│
-└── test/java/ua/khpi/oop/lab03/
-├── RoomTest.java
-├── GuestTest.java
-├── BookingTest.java
-└── HotelTest.java
-
-
-## ⚙️ Використані технології
-- Java 17
-- Maven
-- JUnit Jupiter
-
-## ▶️ Запуск тестів
-
-```bash
+Hotel
+Room
+Guest
+Booking
+⚙️ Технології
+Java 17
+Maven
+TestNG
+JaCoCo
+▶️ Запуск тестів
 mvn clean test
+📊 Покриття коду
+mvn clean verify
+
+Звіт:
+
+target/site/jacoco/index.html
+✅ Результат
+
+Усі тести виконуються успішно:
+
+Tests run: 26, Failures: 0, Errors: 0
