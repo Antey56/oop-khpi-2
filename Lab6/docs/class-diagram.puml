@@ -1,0 +1,43 @@
+@startuml
+
+class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + getPricePerNight(): double
+  + getDescription(): String
+  + book(): void
+  + release(): void
+}
+
+class StandardRoom {
+  - hasBreakfast: boolean
+  + getDescription(): String
+}
+
+class FamilyRoom {
+  - capacity: int
+  + getDescription(): String
+}
+
+class LuxuryRoom {
+  - hasJacuzzi: boolean
+  - luxuryMultiplier: double
+  + getPricePerNight(): double
+  + getDescription(): String
+}
+
+class Guest
+class Booking
+class Hotel
+
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+
+Booking --> Room
+Booking --> Guest
+Hotel "1" --> "*" Room
+
+@enduml
