@@ -1,7 +1,6 @@
 package ua.khpi.oop.lab07;
 
-public class LuxuryRoom extends Room
-        implements Reservable, Cleanable
+public class LuxuryRoom extends Room implements Reservable, Cleanable {
     private boolean hasJacuzzi;
     private double luxuryMultiplier;
 
@@ -24,13 +23,14 @@ public class LuxuryRoom extends Room
     public String getDescription() {
         return "Luxury room with jacuzzi";
     }
-}
-@Override
-public void reserve() {
-    System.out.println("Luxury room reserved");
-}
 
-@Override
-public void clean() {
-    System.out.println("Luxury room cleaned");
+    @Override
+    public void reserve() {
+        System.out.println("Luxury room reserved");
+    }
+
+    @Override
+    public void clean() {
+        System.out.println("Luxury room cleaned");
+    }
 }
