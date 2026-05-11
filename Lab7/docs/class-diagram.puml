@@ -1,0 +1,40 @@
+@startuml
+
+abstract class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + getDescription(): String
+  + getPricePerNight(): double
+  + book(): void
+  + release(): void
+}
+
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+
+interface Reservable {
+  + reserve(): void
+}
+
+interface Bookable {
+  + book(): void
+}
+
+interface Cleanable {
+  + clean(): void
+}
+
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+
+StandardRoom ..|> Reservable
+FamilyRoom ..|> Reservable
+FamilyRoom ..|> Bookable
+LuxuryRoom ..|> Reservable
+LuxuryRoom ..|> Cleanable
+
+@enduml
