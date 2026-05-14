@@ -1,0 +1,88 @@
+@startuml
+
+interface Reservable {
+  + reserve(): void
+}
+
+interface Bookable {
+  + book(): void
+}
+
+interface Cleanable {
+  + clean(): void
+}
+
+abstract class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+
+  + getDescription(): String
+  + getPricePerNight(): double
+  + book(): void
+  + release(): void
+}
+
+class StandardRoom {
+  - hasBreakfast: boolean
+}
+
+class FamilyRoom {
+  - capacity: int
+}
+
+class LuxuryRoom {
+  - hasJacuzzi: boolean
+  - luxuryMultiplier: double
+}
+
+class Guest {
+  - guestId: String
+  - fullName: String
+  - phone: String
+}
+
+class Booking {
+  - bookingId: String
+  - guest: Guest
+  - room: Room
+  - nights: int
+  - active: boolean
+
+  + totalCost(): double
+  + cancel(): void
+}
+
+class Hotel {
+  - name: String
+  - rooms: Room[]
+  - roomCount: int
+
+  + addRoom(room): void
+  + findAvailableRoom(): Room
+}
+
+class HotelFileManager {
+  + saveHotel(hotel, fileName): void
+  + loadHotel(fileName): Hotel
+}
+
+class InvalidBookingException
+
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+
+StandardRoom ..|> Reservable
+FamilyRoom ..|> Reservable
+FamilyRoom ..|> Bookable
+LuxuryRoom ..|> Reservable
+LuxuryRoom ..|> Cleanable
+
+Booking --> Guest
+Booking --> Room
+Hotel --> Room
+HotelFileManager --> Hotel
+
+@enduml
