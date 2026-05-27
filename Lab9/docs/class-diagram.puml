@@ -1,0 +1,106 @@
+@startuml
+
+interface Reservable {
+  + reserve(): void
+}
+
+interface Bookable {
+  + book(): void
+}
+
+interface Cleanable {
+  + clean(): void
+}
+
+abstract class Room {
+  - roomNumber: String
+  - roomType: String
+  - pricePerNight: double
+  - available: boolean
+  + getDescription(): String
+  + getPricePerNight(): double
+  + book(): void
+  + release(): void
+}
+
+class StandardRoom {
+  - hasBreakfast: boolean
+}
+
+class FamilyRoom {
+  - capacity: int
+}
+
+class LuxuryRoom {
+  - hasJacuzzi: boolean
+  - luxuryMultiplier: double
+}
+
+class Customer {
+  - customerId: String
+  - fullName: String
+  - phone: String
+}
+
+class VipCustomer {
+  - bonusLevel: int
+}
+
+class Reservation {
+  - reservationId: String
+  - customer: Customer
+  - room: Room
+  - checkInDate: LocalDate
+  - checkOutDate: LocalDate
+  - active: boolean
+  + getNights(): int
+  + overlapsWith(other: Reservation): boolean
+  + totalCost(): double
+  + cancel(): void
+}
+
+class BookingLink<TCustomer extends Customer, TResource extends Room> {
+  - customer: TCustomer
+  - resource: TResource
+  + createReservation(reservationId: String, nights: int): Reservation
+  + createReservation(reservationId: String, checkInDate: LocalDate, checkOutDate: LocalDate): Reservation
+}
+
+class BookingSchedule<TReservation extends Reservation> {
+  - reservations: List<TReservation>
+  + addReservation(reservation: TReservation): void
+  + isRoomAvailable(room: Room, checkInDate: LocalDate, checkOutDate: LocalDate): boolean
+}
+
+class ReservationRecord<TReservation extends Reservation, TMeta> {
+  - reservation: TReservation
+  - metadata: TMeta
+}
+
+class BookingUtils {
+  + {static} findMostExpensiveRoom<TRoom extends Room>(rooms: List<TRoom>): TRoom
+  + {static} findFirstAvailableRoom<TRoom extends Room>(rooms: List<TRoom>): TRoom
+  + {static} findFirstAvailableRoom<TRoom extends Room>(rooms: List<TRoom>, schedule: BookingSchedule, checkInDate: LocalDate, checkOutDate: LocalDate): TRoom
+}
+
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+Customer <|-- VipCustomer
+
+StandardRoom ..|> Reservable
+FamilyRoom ..|> Reservable
+FamilyRoom ..|> Bookable
+LuxuryRoom ..|> Reservable
+LuxuryRoom ..|> Cleanable
+
+BookingLink --> Customer
+BookingLink --> Room
+Reservation --> Customer
+Reservation --> Room
+ReservationRecord --> Reservation
+BookingSchedule --> Reservation
+BookingUtils ..> Room
+BookingUtils ..> BookingSchedule
+
+@enduml
