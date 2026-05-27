@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Lab09GenericsSuite">
+    <test name="GenericDomainTests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="domain"/>
+                <include name="negative"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="ua.khpi.oop.lab09.BookingLinkTest"/>
+            <class name="ua.khpi.oop.lab09.BookingUtilsTest"/>
+            <class name="ua.khpi.oop.lab09.BookingScheduleTest"/>
+            <class name="ua.khpi.oop.lab09.ReservationRecordTest"/>
+        </classes>
+    </test>
+</suite>
