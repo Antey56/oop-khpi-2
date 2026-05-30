@@ -1,0 +1,14 @@
+@startuml
+class BookingStatistics {
+  +average(values: int[]): double
+}
+class NativeBookingStatistics {
+  +average(values: int[]): double
+}
+class Main
+class BookingStatisticsTest
+BookingStatisticsTest --> BookingStatistics
+BookingStatisticsTest --> NativeBookingStatistics
+Main --> BookingStatistics
+Main --> NativeBookingStatistics
+@enduml

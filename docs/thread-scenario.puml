@@ -1,0 +1,23 @@
+@startuml
+title Lab 15 - synchronized booking scenario
+participant Main
+participant "Thread 1" as T1
+participant "Thread 2" as T2
+participant "SynchronizedHotelRoomPool\n(lock monitor)" as Pool
+
+Main -> T1: start()
+Main -> T2: start()
+T1 -> Pool: tryBook(request)
+activate Pool
+T2 -> Pool: tryBook(request)
+note right of T2: waits for lock
+Pool --> T1: result
+Deactivate Pool
+T2 -> Pool: enters synchronized block
+activate Pool
+Pool --> T2: result
+Deactivate Pool
+Main -> T1: join()
+Main -> T2: join()
+Main -> Pool: read final state
+@enduml

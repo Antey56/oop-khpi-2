@@ -1,0 +1,32 @@
+@startuml
+title Lab 15 - Hotel booking synchronization
+
+class Customer
+abstract class Room
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+class Reservation
+class BookingRequest
+class UnsafeHotelRoomPool
+class SynchronizedHotelRoomPool
+class BookingTask
+class Main
+
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+Reservation --> Customer
+Reservation --> Room
+BookingRequest --> Customer
+UnsafeHotelRoomPool --> Room
+UnsafeHotelRoomPool --> Reservation
+SynchronizedHotelRoomPool --> Room
+SynchronizedHotelRoomPool --> Reservation
+BookingTask --> BookingRequest
+BookingTask --> UnsafeHotelRoomPool
+BookingTask --> SynchronizedHotelRoomPool
+Main --> BookingTask
+Main --> SynchronizedHotelRoomPool
+Main --> UnsafeHotelRoomPool
+@enduml
