@@ -1,0 +1,88 @@
+@startuml
+title Lab 10 - Custom Generic Container and Iterator
+
+class Room {
+  - String number
+  - String type
+  - double pricePerNight
+  + getNumber(): String
+  + getType(): String
+  + getPricePerNight(): double
+}
+
+class Customer {
+  - String name
+  - String phone
+  + getName(): String
+  + getPhone(): String
+}
+
+class Reservation {
+  - String id
+  - Customer customer
+  - Room room
+  - LocalDate checkInDate
+  - LocalDate checkOutDate
+  + getId(): String
+  + getCustomer(): Customer
+  + getRoom(): Room
+  + getCheckInDate(): LocalDate
+  + getCheckOutDate(): LocalDate
+  + overlaps(other: Reservation): boolean
+}
+
+class ReservationContainer<T> {
+  - T[] items
+  - int size
+  - int capacity
+  + add(item: T): void
+  + get(index: int): T
+  + set(index: int, item: T): T
+  + remove(index: int): T
+  + contains(item: T): boolean
+  + indexOf(item: T): int
+  + clear(): void
+  + size(): int
+  + capacity(): int
+  + isEmpty(): boolean
+  + iterator(): Iterator<T>
+}
+
+class ReservationContainerIterator {
+  - int currentIndex
+  + hasNext(): boolean
+  + next(): T
+}
+
+class ReservationSchedule<T extends Reservation> {
+  - ReservationContainer<T> reservations
+  + addReservation(reservation: T): boolean
+  + hasConflict(reservation: T): boolean
+  + get(index: int): T
+  + remove(index: int): T
+  + size(): int
+  + isEmpty(): boolean
+  + iterator(): Iterator<T>
+}
+
+interface Iterable<T> {
+  + iterator(): Iterator<T>
+}
+
+interface Iterator<T> {
+  + hasNext(): boolean
+  + next(): T
+}
+
+Reservation --> Customer
+Reservation --> Room
+
+ReservationContainer ..|> Iterable
+ReservationContainer --> ReservationContainerIterator
+ReservationContainerIterator ..|> Iterator
+
+ReservationSchedule ..|> Iterable
+ReservationSchedule *-- ReservationContainer
+ReservationSchedule --> Reservation
+
+@enduml
