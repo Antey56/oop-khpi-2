@@ -1,46 +1,109 @@
 @startuml
-title Lab 10 - Custom Generic Container and Iterator
+title Lab 10 - Custom Generic Container and Iterator in Hotel Booking System
 
-class Room {
-  - String number
-  - String type
+interface Iterable<T>
+interface Iterator<T>
+
+interface Reservable {
+  + reserve(): void
+}
+
+interface Bookable {
+  + book(): void
+}
+
+interface Cleanable {
+  + clean(): void
+}
+
+abstract class Room {
+  - String roomNumber
+  - String roomType
   - double pricePerNight
-  + getNumber(): String
-  + getType(): String
+  - boolean available
+  + getRoomNumber(): String
+  + getRoomType(): String
   + getPricePerNight(): double
+  + isAvailable(): boolean
+  + book(): void
+  + release(): void
+  + getDescription(): String
+}
+
+class StandardRoom {
+  - boolean hasBreakfast
+  + hasBreakfast(): boolean
+  + reserve(): void
+}
+
+class FamilyRoom {
+  - int capacity
+  + getCapacity(): int
+  + reserve(): void
+}
+
+class LuxuryRoom {
+  - boolean hasJacuzzi
+  - double luxuryMultiplier
+  + hasJacuzzi(): boolean
+  + reserve(): void
+  + clean(): void
 }
 
 class Customer {
-  - String name
+  - String customerId
+  - String fullName
   - String phone
-  + getName(): String
+  + getCustomerId(): String
+  + getFullName(): String
   + getPhone(): String
 }
 
+class VipCustomer {
+  - int bonusLevel
+  + getBonusLevel(): int
+}
+
 class Reservation {
-  - String id
+  - String reservationId
   - Customer customer
   - Room room
   - LocalDate checkInDate
   - LocalDate checkOutDate
-  + getId(): String
+  - boolean active
+  + getReservationId(): String
   + getCustomer(): Customer
   + getRoom(): Room
-  + getCheckInDate(): LocalDate
-  + getCheckOutDate(): LocalDate
-  + overlaps(other: Reservation): boolean
+  + getNights(): int
+  + overlapsWith(Reservation other): boolean
+  + totalCost(): double
+  + cancel(): void
+}
+
+class BookingLink<TCustomer, TResource> {
+  - TCustomer customer
+  - TResource resource
+  + getCustomer(): TCustomer
+  + getResource(): TResource
+  + createReservation(String, int): Reservation
+}
+
+class ReservationRecord<TReservation, TMeta> {
+  - TReservation reservation
+  - TMeta metadata
+  + getReservation(): TReservation
+  + getMetadata(): TMeta
 }
 
 class ReservationContainer<T> {
   - T[] items
   - int size
   - int capacity
-  + add(item: T): void
-  + get(index: int): T
-  + set(index: int, item: T): T
-  + remove(index: int): T
-  + contains(item: T): boolean
-  + indexOf(item: T): int
+  + add(T item): void
+  + get(int index): T
+  + set(int index, T item): T
+  + remove(int index): T
+  + contains(T item): boolean
   + clear(): void
   + size(): int
   + capacity(): int
@@ -54,35 +117,36 @@ class ReservationContainerIterator {
   + next(): T
 }
 
-class ReservationSchedule<T extends Reservation> {
-  - ReservationContainer<T> reservations
-  + addReservation(reservation: T): boolean
-  + hasConflict(reservation: T): boolean
-  + get(index: int): T
-  + remove(index: int): T
-  + size(): int
-  + isEmpty(): boolean
-  + iterator(): Iterator<T>
+class BookingSchedule<TReservation> {
+  - ReservationContainer<TReservation> reservations
+  + addReservation(TReservation reservation): void
+  + isRoomAvailable(Room, LocalDate, LocalDate): boolean
+  + getReservations(): ReservationContainer<TReservation>
 }
 
-interface Iterable<T> {
-  + iterator(): Iterator<T>
+class BookingUtils {
+  + {static} findMostExpensiveRoom(List<TRoom>): TRoom
+  + {static} findFirstAvailableRoom(List<TRoom>): TRoom
 }
 
-interface Iterator<T> {
-  + hasNext(): boolean
-  + next(): T
-}
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+Customer <|-- VipCustomer
+Reservable <|.. StandardRoom
+Reservable <|.. FamilyRoom
+Reservable <|.. LuxuryRoom
+Bookable <|.. FamilyRoom
+Cleanable <|.. LuxuryRoom
 
 Reservation --> Customer
 Reservation --> Room
-
+BookingLink --> Customer
+BookingLink --> Room
+ReservationRecord --> Reservation
+BookingSchedule *-- ReservationContainer
 ReservationContainer ..|> Iterable
-ReservationContainer --> ReservationContainerIterator
 ReservationContainerIterator ..|> Iterator
-
-ReservationSchedule ..|> Iterable
-ReservationSchedule *-- ReservationContainer
-ReservationSchedule --> Reservation
+ReservationContainer *-- ReservationContainerIterator
 
 @enduml

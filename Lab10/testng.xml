@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Lab10ContainerSuite">
+    <test name="ContainerAndDomainTests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="domain"/>
+                <include name="negative"/>
+                <include name="container"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="ua.khpi.oop.lab10.BookingLinkTest"/>
+            <class name="ua.khpi.oop.lab10.BookingUtilsTest"/>
+            <class name="ua.khpi.oop.lab10.BookingScheduleTest"/>
+            <class name="ua.khpi.oop.lab10.ReservationRecordTest"/>
+            <class name="ua.khpi.oop.lab10.ReservationContainerTest"/>
+        </classes>
+    </test>
+</suite>

@@ -1,73 +1,76 @@
 package ua.khpi.oop.lab10;
 
 import java.time.LocalDate;
-import java.util.Iterator;
+import java.util.List;
 
 public class Main {
-
     public static void main(String[] args) {
-        ReservationContainer<Reservation> reservations = new ReservationContainer<>(2);
+        Customer customer = new Customer("C-001", "Olena Kovalenko", "+380501234567");
+        VipCustomer vipCustomer = new VipCustomer("VIP-001", "Danylo Vintoniak", "+4915112345678", 3);
 
-        Room standardRoom = new Room("101", "Standard", 1200.0);
-        Room luxuryRoom = new Room("202", "Luxury", 2500.0);
+        StandardRoom standardRoom = new StandardRoom("101", 800.0, true);
+        FamilyRoom familyRoom = new FamilyRoom("205", 1200.0, 4);
+        LuxuryRoom luxuryRoom = new LuxuryRoom("310", 2000.0, true);
 
-        Customer customer1 = new Customer("Danylo", "+380111111");
-        Customer customer2 = new Customer("Max", "+380222222");
+        BookingLink<Customer, StandardRoom> standardLink = new BookingLink<>(customer, standardRoom);
+        BookingLink<VipCustomer, LuxuryRoom> vipLink = new BookingLink<>(vipCustomer, luxuryRoom);
 
-        Reservation reservation1 = new Reservation(
-                "R001",
-                customer1,
-                standardRoom,
-                LocalDate.of(2026, 5, 20),
-                LocalDate.of(2026, 5, 25)
+        System.out.println("=== Generic booking links ===");
+        System.out.println(standardLink);
+        System.out.println(vipLink);
+
+        BookingSchedule<Reservation> schedule = new BookingSchedule<>();
+        Reservation firstReservation = standardLink.createReservation(
+                "R-001",
+                LocalDate.of(2026, 6, 10),
+                LocalDate.of(2026, 6, 12)
         );
-
-        Reservation reservation2 = new Reservation(
-                "R002",
-                customer2,
-                luxuryRoom,
-                LocalDate.of(2026, 6, 1),
-                LocalDate.of(2026, 6, 5)
+        Reservation secondReservation = vipLink.createReservation(
+                "R-002",
+                LocalDate.of(2026, 6, 12),
+                LocalDate.of(2026, 6, 14)
         );
+        schedule.addReservation(firstReservation);
+        schedule.addReservation(secondReservation);
 
-        reservations.add(reservation1);
-        reservations.add(reservation2);
+        ReservationRecord<Reservation, String> statusRecord = new ReservationRecord<>(firstReservation, "confirmed");
+        ReservationRecord<Reservation, Double> discountRecord = new ReservationRecord<>(secondReservation, 0.10);
 
-        System.out.println("=== Access by index ===");
-        System.out.println(reservations.get(0));
+        ReservationContainer<ReservationRecord<? extends Reservation, ?>> records = new ReservationContainer<>();
+        records.add(statusRecord);
+        records.add(discountRecord);
 
-        System.out.println("\n=== Iterator traversal ===");
-        Iterator<Reservation> iterator = reservations.iterator();
+        System.out.println("\n=== Custom generic container: direct access ===");
+        System.out.println("Container size: " + records.size());
+        System.out.println("First record: " + records.get(0));
+
+        System.out.println("\n=== Traversal with explicit iterator ===");
+        java.util.Iterator<ReservationRecord<? extends Reservation, ?>> iterator = records.iterator();
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
 
-        System.out.println("\n=== For-each traversal ===");
-        for (Reservation reservation : reservations) {
-            System.out.println(reservation);
+        System.out.println("\n=== Traversal with for-each ===");
+        for (ReservationRecord<? extends Reservation, ?> record : records) {
+            System.out.println(record);
         }
 
-        System.out.println("\n=== Remove first reservation ===");
-        Reservation removed = reservations.remove(0);
+        System.out.println("\n=== Removing one record ===");
+        ReservationRecord<? extends Reservation, ?> removed = records.remove(0);
         System.out.println("Removed: " + removed);
+        System.out.println("Container size after remove: " + records.size());
 
-        System.out.println("\n=== After removal ===");
-        for (Reservation reservation : reservations) {
-            System.out.println(reservation);
-        }
-
-        System.out.println("\n=== Schedule conflict demo ===");
-        ReservationSchedule<Reservation> schedule = new ReservationSchedule<>();
-        System.out.println("First reservation added: " + schedule.addReservation(reservation1));
-
-        Reservation conflictingReservation = new Reservation(
-                "R003",
-                customer2,
-                standardRoom,
-                LocalDate.of(2026, 5, 22),
-                LocalDate.of(2026, 5, 24)
+        List<Room> rooms = List.of(standardRoom, familyRoom, luxuryRoom);
+        Room mostExpensiveRoom = BookingUtils.findMostExpensiveRoom(rooms);
+        Room availableRoom = BookingUtils.findFirstAvailableRoom(
+                rooms,
+                schedule,
+                LocalDate.of(2026, 6, 10),
+                LocalDate.of(2026, 6, 12)
         );
 
-        System.out.println("Conflicting reservation added: " + schedule.addReservation(conflictingReservation));
+        System.out.println("\n=== Previous generic methods still work ===");
+        System.out.println("Most expensive room: " + mostExpensiveRoom);
+        System.out.println("First available room for selected dates: " + availableRoom);
     }
 }

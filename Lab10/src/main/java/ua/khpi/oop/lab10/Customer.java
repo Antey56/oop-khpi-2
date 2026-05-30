@@ -3,24 +3,32 @@ package ua.khpi.oop.lab10;
 import java.util.Objects;
 
 public class Customer {
-
-    private final String name;
+    private final String customerId;
+    private final String fullName;
     private final String phone;
 
-    public Customer(String name, String phone) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Customer name cannot be empty");
+    public Customer(String customerId, String fullName, String phone) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new IllegalArgumentException("Customer id must not be blank");
         }
-        if (phone == null || phone.isBlank()) {
-            throw new IllegalArgumentException("Phone cannot be empty");
+        if (fullName == null || fullName.isBlank()) {
+            throw new IllegalArgumentException("Full name must not be blank");
         }
-
-        this.name = name;
-        this.phone = phone;
+        this.customerId = customerId;
+        this.fullName = fullName;
+        this.phone = phone == null || phone.isBlank() ? "-" : phone;
     }
 
-    public String getName() {
-        return name;
+    public Customer(String customerId, String fullName) {
+        this(customerId, fullName, "-");
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     public String getPhone() {
@@ -29,25 +37,23 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return "Customer{customerId='" + customerId + "', fullName='" + fullName +
+                "', phone='" + phone + "'}";
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(object instanceof Customer customer)) {
+        if (!(obj instanceof Customer other)) {
             return false;
         }
-        return Objects.equals(phone, customer.phone);
+        return Objects.equals(customerId, other.customerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(phone);
+        return Objects.hash(customerId);
     }
 }

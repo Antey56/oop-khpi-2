@@ -1,55 +1,49 @@
-# Лабораторна робота №10
-
-## Тема
-Узагальнені контейнери та ітератори в Java.
+# Лабораторна робота №10 — Узагальнені контейнери та ітератори в Java
 
 ## Варіант
-Варіант 2 — система бронювання.
 
-## Короткий опис
-Проєкт демонструє реалізацію власного узагальненого контейнера `ReservationContainer<T>` для зберігання об'єктів системи бронювання готелю.
+Варіант №3 — **Система бронювання**.
 
-Контейнер:
-- реалізований на основі внутрішнього масиву;
-- не використовує `ArrayList` як основне сховище;
-- підтримує `add`, `get`, `set`, `remove`, `size`, `isEmpty`, `contains`, `indexOf`, `clear`;
-- має автоматичне розширення місткості;
-- реалізує `Iterable<T>`;
-- має власний ітератор.
+Предметна область продовжує попередні лабораторні роботи: модель бронювання номерів готелю. Збережено основні класи попередньої роботи: `Customer`, `VipCustomer`, `Room`, `StandardRoom`, `FamilyRoom`, `LuxuryRoom`, `Reservation`, `ReservationRecord`, `BookingLink`, `BookingSchedule`.
 
-## Основні класи
-- `Room` — номер готелю.
-- `Customer` — клієнт.
-- `Reservation` — бронювання.
-- `ReservationContainer<T>` — власний generic-контейнер.
-- `ReservationSchedule<T extends Reservation>` — спеціалізований розклад бронювань із перевіркою конфліктів.
+## Що реалізовано
+
+У роботі реалізовано власний узагальнений контейнер:
+
+1. `ReservationContainer<T>` — самописний generic-контейнер на основі масиву.
+2. Контейнер підтримує операції `add`, `get`, `set`, `remove`, `contains`, `clear`, `size`, `capacity`, `isEmpty`.
+3. Для контейнера реалізовано власний внутрішній ітератор `ReservationContainerIterator`.
+4. `ReservationContainer<T>` реалізує `Iterable<T>`, тому підтримує обхід через `for-each`.
+5. `BookingSchedule<TReservation extends Reservation>` використовує `ReservationContainer<TReservation>` як внутрішнє сховище бронювань.
+6. У `Main` показано додавання, доступ, видалення, обхід через явний ітератор і обхід через `for-each`.
+7. Додано тести для контейнера та збережено тести попередньої моделі.
+
+## Чому контейнер generic
+
+Контейнер `ReservationContainer<T>` може зберігати різні типи об'єктів без приведення типів через `Object`. Наприклад:
+
+```java
+ReservationContainer<Reservation> reservations = new ReservationContainer<>();
+ReservationContainer<ReservationRecord<Reservation, String>> records = new ReservationContainer<>();
+ReservationContainer<Room> rooms = new ReservationContainer<>();
+```
+
+Це робить контейнер типобезпечним і придатним для повторного використання.
+
+## Структура
+
+- `src/main/java/ua/khpi/oop/lab10/` — вихідний код;
+- `src/test/java/ua/khpi/oop/lab10/` — тести TestNG;
+- `docs/class-diagram.puml` — UML-діаграма PlantUML;
+- `REPORT.md` — короткий звіт;
+- `pom.xml` — Maven-конфігурація.
 
 ## Запуск
 
 ```bash
-mvn clean test
+mvn test
 ```
 
 ```bash
-mvn exec:java
-```
-
-## Структура
-```text
-Lab10
-├── src/main/java/ua/khpi/oop/lab10
-│   ├── Customer.java
-│   ├── Main.java
-│   ├── Reservation.java
-│   ├── ReservationContainer.java
-│   ├── ReservationSchedule.java
-│   └── Room.java
-├── src/test/java/ua/khpi/oop/lab10
-│   ├── ReservationContainerTest.java
-│   └── ReservationScheduleTest.java
-├── docs
-│   └── class-diagram.puml
-├── pom.xml
-├── README.md
-└── REPORT.md
+mvn exec:java -Dexec.mainClass="ua.khpi.oop.lab10.Main"
 ```

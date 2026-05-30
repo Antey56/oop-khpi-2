@@ -1,135 +1,94 @@
 package ua.khpi.oop.lab10;
 
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.testng.Assert.*;
 
-class ReservationContainerTest {
-
-    @Test
-    void testInitialState() {
+public class ReservationContainerTest {
+    @Test(groups = {"container", "smoke"})
+    public void shouldAddItemsAndReturnSize() {
         ReservationContainer<String> container = new ReservationContainer<>();
 
         assertTrue(container.isEmpty());
-        assertEquals(0, container.size());
-        assertEquals(10, container.capacity());
-    }
-
-    @Test
-    void testAddAndGet() {
-        ReservationContainer<String> container = new ReservationContainer<>();
-
-        container.add("First");
-        container.add("Second");
+        container.add("first");
+        container.add("second");
 
         assertFalse(container.isEmpty());
-        assertEquals(2, container.size());
-        assertEquals("First", container.get(0));
-        assertEquals("Second", container.get(1));
+        assertEquals(container.size(), 2);
+        assertEquals(container.get(0), "first");
+        assertEquals(container.get(1), "second");
     }
 
-    @Test
-    void testRemove() {
+    @Test(groups = {"container"})
+    public void shouldRemoveItemAndShiftElements() {
         ReservationContainer<String> container = new ReservationContainer<>();
+        container.add("first");
+        container.add("second");
+        container.add("third");
 
+        String removed = container.remove(1);
+
+        assertEquals(removed, "second");
+        assertEquals(container.size(), 2);
+        assertEquals(container.get(0), "first");
+        assertEquals(container.get(1), "third");
+    }
+
+    @Test(groups = {"container"})
+    public void shouldGrowAutomatically() {
+        ReservationContainer<Integer> container = new ReservationContainer<>(2);
+
+        container.add(10);
+        container.add(20);
+        container.add(30);
+
+        assertEquals(container.size(), 3);
+        assertEquals(container.capacity(), 4);
+    }
+
+    @Test(groups = {"container"})
+    public void shouldIterateWithForEach() {
+        ReservationContainer<String> container = new ReservationContainer<>();
         container.add("A");
         container.add("B");
         container.add("C");
 
-        String removed = container.remove(1);
-
-        assertEquals("B", removed);
-        assertEquals(2, container.size());
-        assertEquals("A", container.get(0));
-        assertEquals("C", container.get(1));
-    }
-
-    @Test
-    void testIteratorDirectly() {
-        ReservationContainer<Integer> container = new ReservationContainer<>();
-
-        container.add(10);
-        container.add(20);
-
-        Iterator<Integer> iterator = container.iterator();
-
-        assertTrue(iterator.hasNext());
-        assertEquals(10, iterator.next());
-        assertTrue(iterator.hasNext());
-        assertEquals(20, iterator.next());
-        assertFalse(iterator.hasNext());
-        assertThrows(NoSuchElementException.class, iterator::next);
-    }
-
-    @Test
-    void testForEachLoop() {
-        ReservationContainer<Integer> container = new ReservationContainer<>();
-
-        container.add(1);
-        container.add(2);
-        container.add(3);
-
-        int sum = 0;
-
-        for (Integer number : container) {
-            sum += number;
+        String result = "";
+        for (String item : container) {
+            result += item;
         }
 
-        assertEquals(6, sum);
+        assertEquals(result, "ABC");
     }
 
-    @Test
-    void testCapacityGrowth() {
-        ReservationContainer<Integer> container = new ReservationContainer<>(2);
+    @Test(groups = {"container"})
+    public void shouldWorkWithReservationRecords() {
+        Customer customer = new Customer("C-001", "Olena Kovalenko");
+        Room room = new StandardRoom("101", 800.0, true);
+        Reservation reservation = new Reservation("R-001", customer, room, 2);
+        ReservationRecord<Reservation, String> record = new ReservationRecord<>(reservation, "confirmed");
 
-        container.add(1);
-        container.add(2);
+        ReservationContainer<ReservationRecord<Reservation, String>> container = new ReservationContainer<>();
+        container.add(record);
 
-        assertEquals(2, container.capacity());
-
-        container.add(3);
-
-        assertEquals(3, container.size());
-        assertEquals(4, container.capacity());
+        assertEquals(container.size(), 1);
+        assertEquals(container.get(0).getMetadata(), "confirmed");
+        assertEquals(container.get(0).getReservation().getReservationId(), "R-001");
     }
 
-    @Test
-    void testSetContainsIndexOfAndClear() {
+    @Test(groups = {"negative"}, expectedExceptions = IndexOutOfBoundsException.class)
+    public void shouldRejectIncorrectIndex() {
         ReservationContainer<String> container = new ReservationContainer<>();
-
-        container.add("Old");
-        container.add("Second");
-
-        String previous = container.set(0, "New");
-
-        assertEquals("Old", previous);
-        assertEquals("New", container.get(0));
-        assertTrue(container.contains("Second"));
-        assertEquals(1, container.indexOf("Second"));
-
-        container.clear();
-
-        assertTrue(container.isEmpty());
-        assertEquals(0, container.size());
+        container.get(0);
     }
 
-    @Test
-    void testOutOfBounds() {
+    @Test(groups = {"negative"}, expectedExceptions = NoSuchElementException.class)
+    public void shouldRejectIteratorNextWhenNoElements() {
         ReservationContainer<String> container = new ReservationContainer<>();
-
-        container.add("Test");
-
-        assertThrows(IndexOutOfBoundsException.class, () -> container.get(-1));
-        assertThrows(IndexOutOfBoundsException.class, () -> container.get(1));
-        assertThrows(IndexOutOfBoundsException.class, () -> container.remove(5));
-    }
-
-    @Test
-    void testInvalidCapacity() {
-        assertThrows(IllegalArgumentException.class, () -> new ReservationContainer<>(0));
-        assertThrows(IllegalArgumentException.class, () -> new ReservationContainer<>(-1));
+        Iterator<String> iterator = container.iterator();
+        iterator.next();
     }
 }
