@@ -1,0 +1,25 @@
+
+@startuml
+class BookingTextProcessor {
+  +normalizeWhitespace(line: String): String
+  +isBookingCodeValid(code: String): boolean
+  +parseLine(rawLine: String): Reservation
+  +parseValidReservations(rawLines: List<String>): List<Reservation>
+  +summarize(rawLines: List<String>): BookingTextReport
+  +buildReport(rawLines: List<String>): String
+}
+class BookingTextReport
+class Reservation
+class Customer
+abstract class Room
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+BookingTextProcessor ..> Reservation : creates
+BookingTextProcessor ..> BookingTextReport : creates
+Reservation --> Customer
+Reservation --> Room
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+@enduml

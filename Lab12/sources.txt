@@ -1,0 +1,2 @@
+src/main/java/ua/khpi/oop/lab12/*.java
+src/test/java/ua/khpi/oop/lab12/*.java

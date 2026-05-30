@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Customer
+class VipCustomer
+abstract class Room
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+class Reservation
+class HotelBookingRegistry
+class BookingAnalytics
+
+Customer <|-- VipCustomer
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+Reservation --> Customer
+Reservation --> Room
+HotelBookingRegistry --> Reservation : stores List/Map/Set/Queue
+BookingAnalytics --> Reservation : processes with Stream API
+
+class BookingAnalytics {
+  - List<Reservation> reservations
+  + findActiveReservations()
+  + findReservationsInDateRange(start, end)
+  + getCustomerNamesSorted()
+  + countReservationsByRoomType()
+  + groupReservationsByRoomType()
+  + calculateTotalRevenue()
+  + findMostExpensiveReservation()
+  + buildRoomTypeSummaryReport()
+}
+@enduml
