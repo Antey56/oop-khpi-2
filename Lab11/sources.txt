@@ -1,0 +1,1 @@
+Lab11 based on Lab10 hotel booking model. Standard Java Collections Framework: List, Map, Set, Queue.

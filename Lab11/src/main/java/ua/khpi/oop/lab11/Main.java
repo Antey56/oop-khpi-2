@@ -1,73 +1,75 @@
-package ua.khpi.oop.lab10;
+
+package ua.khpi.oop.lab11;
 
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
 
 public class Main {
-
     public static void main(String[] args) {
-        ReservationContainer<Reservation> reservations = new ReservationContainer<>(2);
+        HotelBookingRegistry registry = new HotelBookingRegistry();
 
-        Room standardRoom = new Room("101", "Standard", 1200.0);
-        Room luxuryRoom = new Room("202", "Luxury", 2500.0);
+        Customer customer = new Customer("C-001", "Olena Kovalenko", "+380501234567");
+        VipCustomer vipCustomer = new VipCustomer("VIP-001", "Danylo Vintoniak", "+4915112345678", 3);
 
-        Customer customer1 = new Customer("Danylo", "+380111111");
-        Customer customer2 = new Customer("Max", "+380222222");
+        StandardRoom standardRoom = new StandardRoom("101", 800.0, true);
+        FamilyRoom familyRoom = new FamilyRoom("205", 1200.0, 4);
+        LuxuryRoom luxuryRoom = new LuxuryRoom("310", 2000.0, true);
 
-        Reservation reservation1 = new Reservation(
-                "R001",
-                customer1,
-                standardRoom,
-                LocalDate.of(2026, 5, 20),
-                LocalDate.of(2026, 5, 25)
-        );
+        Reservation r1 = new Reservation("R-001", customer, standardRoom,
+                LocalDate.of(2026, 6, 10), LocalDate.of(2026, 6, 12));
+        Reservation r2 = new Reservation("R-002", vipCustomer, luxuryRoom,
+                LocalDate.of(2026, 6, 12), LocalDate.of(2026, 6, 15));
+        Reservation r3 = new Reservation("R-003", customer, familyRoom,
+                LocalDate.of(2026, 6, 18), LocalDate.of(2026, 6, 20));
 
-        Reservation reservation2 = new Reservation(
-                "R002",
-                customer2,
-                luxuryRoom,
-                LocalDate.of(2026, 6, 1),
-                LocalDate.of(2026, 6, 5)
-        );
+        registry.addReservation(r1);
+        registry.addReservation(r2);
+        registry.addReservation(r3);
 
-        reservations.add(reservation1);
-        reservations.add(reservation2);
+        System.out.println("=== Lab 11: Collections Framework in hotel booking system ===");
+        System.out.println("Total reservations: " + registry.size());
+        System.out.println("Unique customers: " + registry.getUniqueCustomers().size());
 
-        System.out.println("=== Access by index ===");
-        System.out.println(reservations.get(0));
+        System.out.println("
+=== List: reservations in order ===");
+        for (Reservation reservation : registry.getAllReservations()) {
+            System.out.println(reservation);
+        }
 
-        System.out.println("\n=== Iterator traversal ===");
-        Iterator<Reservation> iterator = reservations.iterator();
+        System.out.println("
+=== Map: fast search by reservation id ===");
+        System.out.println(registry.findById("R-002"));
+
+        System.out.println("
+=== Map entrySet traversal ===");
+        for (Map.Entry<String, Reservation> entry : registry.getReservationsByIdSnapshot().entrySet()) {
+            System.out.println(entry.getKey() + " -> room " + entry.getValue().getRoom().getRoomNumber());
+        }
+
+        System.out.println("
+=== Iterator traversal ===");
+        Iterator<Reservation> iterator = registry.getAllReservations().iterator();
         while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+            System.out.println(iterator.next().getReservationId());
         }
 
-        System.out.println("\n=== For-each traversal ===");
-        for (Reservation reservation : reservations) {
-            System.out.println(reservation);
+        System.out.println("
+=== Queue: processing reservations ===");
+        Queue<Reservation> queue = registry.getProcessingQueueSnapshot();
+        while (!queue.isEmpty()) {
+            System.out.println("Processing " + queue.poll().getReservationId());
         }
 
-        System.out.println("\n=== Remove first reservation ===");
-        Reservation removed = reservations.remove(0);
-        System.out.println("Removed: " + removed);
-
-        System.out.println("\n=== After removal ===");
-        for (Reservation reservation : reservations) {
-            System.out.println(reservation);
+        System.out.println("
+=== Sorted by total cost ===");
+        for (Reservation reservation : registry.getReservationsSortedByTotalCostDescending()) {
+            System.out.println(reservation.getReservationId() + " -> " + reservation.totalCost());
         }
 
-        System.out.println("\n=== Schedule conflict demo ===");
-        ReservationSchedule<Reservation> schedule = new ReservationSchedule<>();
-        System.out.println("First reservation added: " + schedule.addReservation(reservation1));
-
-        Reservation conflictingReservation = new Reservation(
-                "R003",
-                customer2,
-                standardRoom,
-                LocalDate.of(2026, 5, 22),
-                LocalDate.of(2026, 5, 24)
-        );
-
-        System.out.println("Conflicting reservation added: " + schedule.addReservation(conflictingReservation));
+        System.out.println("
+=== Text report ===");
+        System.out.println(registry.buildReservationReport());
     }
 }

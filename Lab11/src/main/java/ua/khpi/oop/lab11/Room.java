@@ -2,55 +2,77 @@ package ua.khpi.oop.lab11;
 
 import java.util.Objects;
 
-public class Room implements Comparable<Room> {
-
-    private final String number;
-    private final String type;
+public abstract class Room {
+    private final String roomNumber;
+    private final String roomType;
     private final double pricePerNight;
+    private boolean available;
 
-    public Room(String number, String type, double pricePerNight) {
-        this.number = number;
-        this.type = type;
+    protected Room(String roomNumber, String roomType, double pricePerNight) {
+        if (roomNumber == null || roomNumber.isBlank()) {
+            throw new IllegalArgumentException("Room number must not be blank");
+        }
+        if (roomType == null || roomType.isBlank()) {
+            throw new IllegalArgumentException("Room type must not be blank");
+        }
+        if (pricePerNight <= 0) {
+            throw new IllegalArgumentException("Price per night must be positive");
+        }
+
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
         this.pricePerNight = pricePerNight;
+        this.available = true;
     }
 
-    public String getNumber() {
-        return number;
+    public String getRoomNumber() {
+        return roomNumber;
     }
 
-    public String getType() {
-        return type;
+    public String getRoomType() {
+        return roomType;
     }
 
     public double getPricePerNight() {
         return pricePerNight;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void book() {
+        if (!available) {
+            throw new IllegalStateException("Room is already booked");
+        }
+        available = false;
+    }
+
+    public void release() {
+        available = true;
+    }
+
+    public abstract String getDescription();
+
     @Override
-    public int compareTo(Room other) {
-        return this.number.compareTo(other.number);
+    public String toString() {
+        return "Room{roomNumber='" + roomNumber + "', roomType='" + roomType +
+                "', pricePerNight=" + getPricePerNight() + ", available=" + available + '}';
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (!(o instanceof Room room))
+        }
+        if (!(obj instanceof Room other)) {
             return false;
-        return Objects.equals(number, room.number);
+        }
+        return Objects.equals(roomNumber, other.roomNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number);
-    }
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "number='" + number + '\'' +
-                ", type='" + type + '\'' +
-                ", pricePerNight=" + pricePerNight +
-                '}';
+        return Objects.hash(roomNumber);
     }
 }

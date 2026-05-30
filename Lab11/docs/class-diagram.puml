@@ -1,88 +1,35 @@
+
 @startuml
-title Lab 10 - Custom Generic Container and Iterator
+skinparam classAttributeIconSize 0
 
-class Room {
-  - String number
-  - String type
-  - double pricePerNight
-  + getNumber(): String
-  + getType(): String
-  + getPricePerNight(): double
+class HotelBookingRegistry {
+  - List<Reservation> reservationsInOrder
+  - Map<String, Reservation> reservationsById
+  - Set<Customer> uniqueCustomers
+  - Queue<Reservation> processingQueue
+  + addReservation(Reservation)
+  + findById(String) : Reservation
+  + removeReservation(String) : Reservation
+  + cancelReservation(String) : boolean
+  + pollNextForProcessing() : Reservation
+  + findByCustomer(Customer) : List<Reservation>
+  + findByRoomType(String) : List<Reservation>
 }
 
-class Customer {
-  - String name
-  - String phone
-  + getName(): String
-  + getPhone(): String
-}
+class Customer
+class VipCustomer
+abstract class Room
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+class Reservation
 
-class Reservation {
-  - String id
-  - Customer customer
-  - Room room
-  - LocalDate checkInDate
-  - LocalDate checkOutDate
-  + getId(): String
-  + getCustomer(): Customer
-  + getRoom(): Room
-  + getCheckInDate(): LocalDate
-  + getCheckOutDate(): LocalDate
-  + overlaps(other: Reservation): boolean
-}
-
-class ReservationContainer<T> {
-  - T[] items
-  - int size
-  - int capacity
-  + add(item: T): void
-  + get(index: int): T
-  + set(index: int, item: T): T
-  + remove(index: int): T
-  + contains(item: T): boolean
-  + indexOf(item: T): int
-  + clear(): void
-  + size(): int
-  + capacity(): int
-  + isEmpty(): boolean
-  + iterator(): Iterator<T>
-}
-
-class ReservationContainerIterator {
-  - int currentIndex
-  + hasNext(): boolean
-  + next(): T
-}
-
-class ReservationSchedule<T extends Reservation> {
-  - ReservationContainer<T> reservations
-  + addReservation(reservation: T): boolean
-  + hasConflict(reservation: T): boolean
-  + get(index: int): T
-  + remove(index: int): T
-  + size(): int
-  + isEmpty(): boolean
-  + iterator(): Iterator<T>
-}
-
-interface Iterable<T> {
-  + iterator(): Iterator<T>
-}
-
-interface Iterator<T> {
-  + hasNext(): boolean
-  + next(): T
-}
-
+Customer <|-- VipCustomer
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
 Reservation --> Customer
 Reservation --> Room
-
-ReservationContainer ..|> Iterable
-ReservationContainer --> ReservationContainerIterator
-ReservationContainerIterator ..|> Iterator
-
-ReservationSchedule ..|> Iterable
-ReservationSchedule *-- ReservationContainer
-ReservationSchedule --> Reservation
-
+HotelBookingRegistry o-- Reservation
+HotelBookingRegistry o-- Customer
 @enduml

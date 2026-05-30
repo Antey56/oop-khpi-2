@@ -1,55 +1,38 @@
-# Лабораторна робота №10
 
-## Тема
-Узагальнені контейнери та ітератори в Java.
+# Лабораторна робота №11
 
-## Варіант
-Варіант 2 — система бронювання.
+**Тема:** Collections Framework в Java  
+**Предметна область:** система бронювання готельних номерів на базі моделі з ЛР10.
 
-## Короткий опис
-Проєкт демонструє реалізацію власного узагальненого контейнера `ReservationContainer<T>` для зберігання об'єктів системи бронювання готелю.
+## Що реалізовано
 
-Контейнер:
-- реалізований на основі внутрішнього масиву;
-- не використовує `ArrayList` як основне сховище;
-- підтримує `add`, `get`, `set`, `remove`, `size`, `isEmpty`, `contains`, `indexOf`, `clear`;
-- має автоматичне розширення місткості;
-- реалізує `Iterable<T>`;
-- має власний ітератор.
+У роботі використано стандартні колекції Java замість самописного контейнера з ЛР10.
+Головний сервіс — `HotelBookingRegistry`.
 
-## Основні класи
-- `Room` — номер готелю.
-- `Customer` — клієнт.
-- `Reservation` — бронювання.
-- `ReservationContainer<T>` — власний generic-контейнер.
-- `ReservationSchedule<T extends Reservation>` — спеціалізований розклад бронювань із перевіркою конфліктів.
+Використані колекції:
+
+- `ArrayList<Reservation>` — зберігає бронювання в порядку додавання;
+- `HashMap<String, Reservation>` — забезпечує швидкий пошук бронювання за `reservationId`;
+- `HashSet<Customer>` — зберігає унікальних клієнтів без повторів;
+- `ArrayDeque<Reservation>` як `Queue<Reservation>` — моделює чергу обробки бронювань.
+
+## Основні операції
+
+- додавання бронювання;
+- пошук за ідентифікатором;
+- пошук за клієнтом;
+- пошук за типом кімнати;
+- скасування бронювання;
+- видалення бронювання;
+- обхід `List` через `for-each` та `Iterator`;
+- обхід `Map` через `entrySet()`;
+- обробка черги через `poll()`;
+- сортування бронювань через `Comparator`.
 
 ## Запуск
 
 ```bash
-mvn clean test
-```
-
-```bash
-mvn exec:java
-```
-
-## Структура
-```text
-Lab10
-├── src/main/java/ua/khpi/oop/lab10
-│   ├── Customer.java
-│   ├── Main.java
-│   ├── Reservation.java
-│   ├── ReservationContainer.java
-│   ├── ReservationSchedule.java
-│   └── Room.java
-├── src/test/java/ua/khpi/oop/lab10
-│   ├── ReservationContainerTest.java
-│   └── ReservationScheduleTest.java
-├── docs
-│   └── class-diagram.puml
-├── pom.xml
-├── README.md
-└── REPORT.md
+mvn test
+mvn compile
+java -cp target/classes ua.khpi.oop.lab11.Main
 ```

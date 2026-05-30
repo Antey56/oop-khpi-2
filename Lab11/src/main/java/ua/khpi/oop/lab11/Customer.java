@@ -3,23 +3,32 @@ package ua.khpi.oop.lab11;
 import java.util.Objects;
 
 public class Customer {
-
-    private final String id;
-    private final String name;
+    private final String customerId;
+    private final String fullName;
     private final String phone;
 
-    public Customer(String id, String name, String phone) {
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
+    public Customer(String customerId, String fullName, String phone) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new IllegalArgumentException("Customer id must not be blank");
+        }
+        if (fullName == null || fullName.isBlank()) {
+            throw new IllegalArgumentException("Full name must not be blank");
+        }
+        this.customerId = customerId;
+        this.fullName = fullName;
+        this.phone = phone == null || phone.isBlank() ? "-" : phone;
     }
 
-    public String getId() {
-        return id;
+    public Customer(String customerId, String fullName) {
+        this(customerId, fullName, "-");
     }
 
-    public String getName() {
-        return name;
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     public String getPhone() {
@@ -27,25 +36,24 @@ public class Customer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public String toString() {
+        return "Customer{customerId='" + customerId + "', fullName='" + fullName +
+                "', phone='" + phone + "'}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (!(o instanceof Customer customer))
+        }
+        if (!(obj instanceof Customer other)) {
             return false;
-        return Objects.equals(id, customer.id);
+        }
+        return Objects.equals(customerId, other.customerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return Objects.hash(customerId);
     }
 }

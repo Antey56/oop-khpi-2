@@ -1,43 +1,47 @@
-package ua.khpi.oop.lab10;
+package ua.khpi.oop.lab11;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Reservation {
-
-    private final String id;
+    private final String reservationId;
     private final Customer customer;
     private final Room room;
     private final LocalDate checkInDate;
     private final LocalDate checkOutDate;
+    private boolean active;
 
-    public Reservation(String id, Customer customer, Room room,
-                       LocalDate checkInDate, LocalDate checkOutDate) {
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("Reservation id cannot be empty");
+    public Reservation(String reservationId, Customer customer, Room room, LocalDate checkInDate, LocalDate checkOutDate) {
+        if (reservationId == null || reservationId.isBlank()) {
+            throw new IllegalArgumentException("Reservation id must not be blank");
         }
         if (customer == null) {
-            throw new IllegalArgumentException("Customer cannot be null");
+            throw new IllegalArgumentException("Customer must not be null");
         }
         if (room == null) {
-            throw new IllegalArgumentException("Room cannot be null");
+            throw new IllegalArgumentException("Room must not be null");
         }
         if (checkInDate == null || checkOutDate == null) {
-            throw new IllegalArgumentException("Dates cannot be null");
+            throw new IllegalArgumentException("Reservation dates must not be null");
         }
         if (!checkOutDate.isAfter(checkInDate)) {
             throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
-
-        this.id = id;
+        this.reservationId = reservationId;
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.active = true;
     }
 
-    public String getId() {
-        return id;
+    public Reservation(String reservationId, Customer customer, Room room, int nights) {
+        this(reservationId, customer, room, LocalDate.now(), LocalDate.now().plusDays(nights));
+    }
+
+    public String getReservationId() {
+        return reservationId;
     }
 
     public Customer getCustomer() {
@@ -56,40 +60,52 @@ public class Reservation {
         return checkOutDate;
     }
 
-    public boolean overlaps(Reservation other) {
-        if (other == null) {
+    public int getNights() {
+        return (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean overlapsWith(Reservation other) {
+        if (other == null || !active || !other.active) {
             return false;
         }
-
         return room.equals(other.room)
                 && checkInDate.isBefore(other.checkOutDate)
-                && checkOutDate.isAfter(other.checkInDate);
+                && other.checkInDate.isBefore(checkOutDate);
+    }
+
+    public double totalCost() {
+        return room.getPricePerNight() * getNights();
+    }
+
+    public void cancel() {
+        active = false;
     }
 
     @Override
     public String toString() {
-        return "Reservation{" +
-                "id='" + id + '\'' +
-                ", customer=" + customer +
-                ", room=" + room +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                '}';
+        return "Reservation{reservationId='" + reservationId + "', customer=" + customer.getFullName() +
+                ", room=" + room.getRoomNumber() + ", checkInDate=" + checkInDate +
+                ", checkOutDate=" + checkOutDate + ", nights=" + getNights() +
+                ", totalCost=" + totalCost() + ", active=" + active + '}';
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(object instanceof Reservation that)) {
+        if (!(obj instanceof Reservation other)) {
             return false;
         }
-        return Objects.equals(id, that.id);
+        return Objects.equals(reservationId, other.reservationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(reservationId);
     }
 }

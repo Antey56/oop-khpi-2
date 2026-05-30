@@ -1,0 +1,9 @@
+
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Lab11Suite">
+    <test name="Lab11Tests">
+        <classes>
+            <class name="ua.khpi.oop.lab11.HotelBookingRegistryTest"/>
+        </classes>
+    </test>
+</suite>
