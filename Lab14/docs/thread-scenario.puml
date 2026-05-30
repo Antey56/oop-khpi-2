@@ -1,0 +1,18 @@
+
+@startuml
+actor Main
+participant ReservationCheckThread
+participant ConfirmationThread
+participant OccupancyReportThread
+
+Main -> ReservationCheckThread: start()
+Main -> ConfirmationThread: start()
+Main -> OccupancyReportThread: start()
+ReservationCheckThread -> ReservationCheckThread: sleep(), check reservations
+ConfirmationThread -> ConfirmationThread: sleep(), prepare confirmations
+OccupancyReportThread -> OccupancyReportThread: sleep(), build report
+Main -> ReservationCheckThread: join()
+Main -> ConfirmationThread: join()
+Main -> OccupancyReportThread: join()
+Main -> Main: read final results
+@enduml

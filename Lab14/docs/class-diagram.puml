@@ -1,0 +1,30 @@
+
+@startuml
+class Customer
+class VipCustomer
+abstract class Room
+class StandardRoom
+class FamilyRoom
+class LuxuryRoom
+class Reservation
+class BookingThreadService
+class ReservationCheckThread
+class ConfirmationTask
+class OccupancyReportTask
+
+Customer <|-- VipCustomer
+Room <|-- StandardRoom
+Room <|-- FamilyRoom
+Room <|-- LuxuryRoom
+Reservation --> Customer
+Reservation --> Room
+ReservationCheckThread --|> Thread
+ReservationCheckThread --> Reservation
+ReservationCheckThread --> BookingThreadService
+ConfirmationTask ..|> Runnable
+ConfirmationTask --> Reservation
+ConfirmationTask --> BookingThreadService
+OccupancyReportTask ..|> Runnable
+OccupancyReportTask --> Reservation
+OccupancyReportTask --> BookingThreadService
+@enduml
