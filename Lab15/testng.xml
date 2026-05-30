@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Lab12Suite">
+    <test name="Lab12Tests">
+        <classes>
+            <class name="ua.khpi.oop.lab15.BookingAnalyticsTest"/>
+        </classes>
+    </test>
+</suite>
